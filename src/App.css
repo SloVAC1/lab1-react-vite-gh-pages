@@ -30,6 +30,10 @@
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 
+.logo.react {
+  animation: logo-spin infinite 20s linear;
+}
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -48,7 +52,7 @@
   to {
     transform: rotate(360deg);
   }
-
+}
 
 h1 {
   font-size: 3.2em;

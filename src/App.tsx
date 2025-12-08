@@ -58,16 +58,16 @@ function App() {
     <>
       <div className="logo-container">
         <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
+          <img src="vite.svg" className="logo" alt="Vite logo" />
           <div className="logo-label">Vite logo</div>
         </a>
         <a href="https://react.dev" target="_blank">
-          <img src="/react.svg" className="logo" alt="React logo" />
+          <img src="react.svg" className="logo react" alt="React logo" />
           <div className="logo-label">React logo</div>
         </a>
       </div>
       
-      <h1># Vite + React</h1>
+      <h1>Vite + React</h1>
       
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
@@ -81,8 +81,8 @@ function App() {
       <hr className="divider" />
       
       <div className="lab-section">
-        <h2>## Лабораторная работа: Посты с пагинацией (Вариант 4)</h2>
-        <h3>### Загрузка постов с пагинацией</h3>
+        <h2>Лабораторная работа: Посты с пагинацией (Вариант 4)</h2>
+        <h3>Загрузка постов с пагинацией</h3>
         
         {error && (
           <div className="error">
