@@ -1,52 +1,59 @@
-name: Test and Deploy
+name: CI/CD Pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    on:
+      push:
+        branches:
+          - main # Запускать workflow при пуше в ветку main
+      pull_request:
+        branches:
+          - main # Запускать workflow при создании/обновлении pull request в ветку main
 
-permissions:
-  contents: write
+    jobs:
+      test:
+        name: Run Tests
+        runs-on: ubuntu-latest # Используем последнюю версию Ubuntu для выполнения задания
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - run: npm ci
-      
-      - run: npm run test:run
-      
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        if: success()
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4 # Скачиваем ваш код из репозитория на runner
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test  # ✅ Зависит от успешного прохождения тестов
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - run: npm ci
-      
-      - run: npm run build
-      
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20' # Используем Node.js версии 20 (или выше, как указано в Лабе 1)
+              cache: 'npm'       # Кэшируем зависимости npm для ускорения установки
+
+          - name: Install dependencies
+            run: npm install # Устанавливаем все зависимости проекта
+
+          - name: Run Vitest tests
+            run: npm run test # Запускаем ваши тесты Vitest
+            # Если тесты не проходят, этот шаг завершится ошибкой, и весь workflow будет считаться проваленным.
+
+      deploy:
+        name: Deploy to GitHub Pages
+        needs: test # Этот job зависит от успешного выполнения job 'test'. Деплой не начнется, если тесты провалились.
+        if: success() && github.ref == 'refs/heads/main' # Деплоить только если тесты прошли и это ветка main
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'npm'
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Build project
+            run: npm run build # Собираем проект для деплоя
+
+          - name: Deploy to GitHub Pages
+            run: npm run deploy # Запускаем скрипт деплоя gh-pages
+            env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Используем встроенный токен GitHub для аутентификации
+                                                    # gh-pages обычно использует этот токен по умолчанию.
