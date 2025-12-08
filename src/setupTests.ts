@@ -1,7 +1,24 @@
-import '@testing-library/jest-dom'
-import { afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom';
 
+// Подавление предупреждений act (для тестов)
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (/Warning.*not wrapped in act/.test(args[0])) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
+// Мок для fetch
+global.fetch = jest.fn();
+
+// Очистка моков после каждого теста
 afterEach(() => {
-  cleanup()
-})
+  jest.clearAllMocks();
+});
