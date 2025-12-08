@@ -3,11 +3,12 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/lab1-react-vite-gh-pages',
+  base: '/lab1-react-vite-gh-pages/',
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
+    environment: 'jsdom',              // ИСПРАВЛЕНО 'jsdom'
+    setupFiles: './src/setupTests.ts', // ИСПРАВЛЕНО .ts вместо .cs
     css: true,
   },
 })
+// Убрать лишнюю закрывающую скобку в конце
