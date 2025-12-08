@@ -24,14 +24,14 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # Используем npm ci вместо npm install
 
       - name: Run Vitest tests
-        run: npm run test
+        run: npm test  # Используем npm test вместо npm run test
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: test  # Деплой только если тесты прошли
+    needs: test
     if: success() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
@@ -46,7 +46,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build project
         run: npm run build
