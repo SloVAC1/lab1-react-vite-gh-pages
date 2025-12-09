@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import UserTable from './components/UserTable'   // ← добавлено
 
 interface Post {
   id: number
@@ -25,11 +26,11 @@ function App() {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts?_page=${currentPage}&_limit=${postsPerPage}`
       )
-      
+
       if (!response.ok) {
         throw new Error(`Ошибка HTTP! Статус: ${response.status}`)
       }
-      
+
       const data = await response.json()
       setPosts(data)
       setError(null)
@@ -66,29 +67,33 @@ function App() {
           <div className="logo-label">React logo</div>
         </a>
       </div>
-      
+
       <h1>Vite + React</h1>
-    
 
-        <div className="card">
-         <button onClick={() => setCount((count) => count + 1)}>
-           Count is {count}
-            </button>
-                </div>
+      <div className="card">
+        <button onClick={() => setCount(count => count + 1)}>
+          Count is {count}
+        </button>
+      </div>
 
-      
+      {/* ← ДОБАВИЛ: Компонент таблицы пользователей */}
       <hr className="divider" />
-      
+      <h2>Загрузка пользователей</h2>
+      <UserTable />
+      {/* ← КНОПКА и ТАБЛИЦА ПОЯВЯТСЯ ЗДЕСЬ */}
+
+      <hr className="divider" />
+
       <div className="lab-section">
         <h2>Лабораторная работа: Посты с пагинацией (Вариант 4)</h2>
         <h3>Загрузка постов с пагинацией</h3>
-        
+
         {error && (
           <div className="error">
             Ошибка: {error}
           </div>
         )}
-        
+
         {loading ? (
           <div className="loading">Загрузка постов...</div>
         ) : (
@@ -113,35 +118,35 @@ function App() {
                 </tbody>
               </table>
             </div>
-            
+
             <div className="pagination">
-              <button 
+              <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
                 className="pagination-button"
               >
                 Назад
               </button>
-              
+
               <span className="page-info">
                 Страница {currentPage}
               </span>
-              
-              <button 
+
+              <button
                 onClick={handleNextPage}
                 className="pagination-button"
               >
                 Вперед
               </button>
             </div>
-            
+
             <div className="post-count">
               Показано {posts.length} постов (с {(currentPage - 1) * postsPerPage + 1} по {currentPage * postsPerPage})
             </div>
           </>
         )}
       </div>
-      
+
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

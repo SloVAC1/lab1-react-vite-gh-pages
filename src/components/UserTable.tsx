@@ -1,61 +1,72 @@
-// src/components/UserTable.tsx
-import { useState } from 'react';
+import { useState } from 'react'
+
+type User = {
+  id: number
+  name: string
+  email: string
+  phone: string
+  website: string
+}
 
 export default function UserTable() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const loadUsers = async () => {
-    setLoading(true);
-    setError(null);
-    
+  const fetchUsers = async () => {
+    setLoading(true)
+    setError(null)
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const response = await fetch('https://jsonplaceholder.typicode.com/users')
       if (!response.ok) {
-        throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json();
-      setUsers(data);
-    } catch (err: any) {
-      setError(err.message || 'Неизвестная ошибка');
+      const data: User[] = await response.json()
+      setUsers(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Неизвестная ошибка')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div>
-      <button onClick={loadUsers} disabled={loading}>
+    <div className="user-table-container">
+      <button onClick={fetchUsers} disabled={loading}>
         {loading ? 'Загрузка...' : 'Загрузить пользователей'}
       </button>
-      
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-      
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
       {users.length > 0 && (
-        <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '100%' }}>
+        <table
+          border={1}
+          style={{ marginTop: '20px', borderCollapse: 'collapse', width: '100%' }}
+        >
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>ID</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Имя</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Email</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Телефон</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Сайт</th>
+              <th>Имя</th>
+              <th>Email</th>
+              <th>Телефон</th>
+              <th>Сайт</th>
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {users.map((user) => (
               <tr key={user.id}>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{user.id}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{user.name}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{user.email}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{user.phone}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{user.website}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>
+                  <a href={`http://${user.website}`} target="_blank" rel="noopener noreferrer">
+                    {user.website}
+                  </a>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
     </div>
-  );
+  )
 }
